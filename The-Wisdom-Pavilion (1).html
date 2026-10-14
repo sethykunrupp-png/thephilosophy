@@ -1,0 +1,703 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Wisdom Pavilion</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gloock&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a pavilion with four chambers — a typographic hero question, a chamber switcher, tradition cards, a synthesis panel, a reflection desk, then a timeline of thinkers. */
+:root{
+  --bg:#E8ECE6;          /* pale celadon stone */
+  --surface:#F4F6F1;
+  --ink:#1B2230;         /* indigo ink */
+  --muted:#596273;
+  --line:#C5CCC3;
+  --gold:#9A6F16;        /* gold leaf */
+  --lacquer:#8B2B1F;     /* lacquer red, used sparingly */
+  --gold-soft:rgba(154,111,22,.12);
+  --font-display:"Gloock", "Bodoni 72", Didot, Georgia, serif;
+  --font-body:"Literata", Georgia, "Times New Roman", serif;
+  --font-mono:"IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#11151D;--surface:#181E29;--ink:#E5E3DA;--muted:#9AA2B1;--line:#2C3443;
+    --gold:#D6A949;--lacquer:#D7684F;--gold-soft:rgba(214,169,73,.13);color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#11151D;--surface:#181E29;--ink:#E5E3DA;--muted:#9AA2B1;--line:#2C3443;
+  --gold:#D6A949;--lacquer:#D7684F;--gold-soft:rgba(214,169,73,.13);color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:17px;line-height:1.6;padding-inline:clamp(16px,4vw,48px)}
+.wrap{max-width:1120px;margin:0 auto;padding-block:40px 64px;display:flex;flex-direction:column;gap:72px}
+h1,h2,h3{font-family:var(--font-display);font-weight:400;text-wrap:balance;margin:0;line-height:1.08}
+p{margin:0}
+.label{font-family:var(--font-mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+a{color:var(--gold)}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:2px}
+
+/* Hero */
+.hero{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:32px;align-items:end;border-bottom:1px solid var(--line);padding-bottom:40px}
+.hero h1{font-size:clamp(44px,8vw,104px);letter-spacing:-.01em}
+.hero h1 em{font-style:normal;color:var(--gold)}
+.hero .lede{max-width:56ch;color:var(--muted);margin-top:24px;font-size:18px}
+.hero-fig{margin:0;width:clamp(200px,24vw,300px);display:flex;flex-direction:column;gap:12px}
+.hero-fig .niche{border-radius:999px 999px 6px 6px}
+.hero-fig img{display:block;width:100%;aspect-ratio:382/523;object-fit:cover;border-radius:999px 999px 2px 2px}
+.hero-fig figcaption{font-family:var(--font-mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-align:center;line-height:1.5}
+.hero-fig figcaption b{display:block;font-family:var(--font-display);font-weight:400;font-size:18px;letter-spacing:0;text-transform:none;color:var(--ink)}
+@media (max-width:700px){.hero{grid-template-columns:1fr}.hero-fig{width:min(240px,70%);justify-self:center}}
+
+/* Jayavarman VII feature */
+.king{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:48px;border-top:1px solid var(--ink);padding-top:36px}
+.king h2{font-size:clamp(32px,4.6vw,54px);margin-top:12px}
+.king .lede2{margin-top:18px;color:var(--muted);max-width:58ch}
+.king .inscr{margin-top:24px;padding:18px 20px;border-left:3px solid var(--gold);background:var(--gold-soft);font-family:var(--font-display);font-size:21px;line-height:1.4}
+.king .inscr small{display:block;font-family:var(--font-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:10px}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);margin-top:28px}
+.stat{background:var(--bg);padding:14px 14px 16px;display:flex;flex-direction:column;gap:4px}
+.stat .v{font-family:var(--font-display);font-size:32px;line-height:1;font-variant-numeric:tabular-nums;color:var(--gold)}
+.stat .k{font-size:13px;color:var(--muted);line-height:1.35}
+.tenets{display:flex;flex-direction:column;gap:0;border-top:1px solid var(--line)}
+.tenet{display:grid;grid-template-columns:auto minmax(0,1fr);gap:18px;padding:20px 0;border-bottom:1px solid var(--line)}
+.tenet .sym{width:38px;height:38px;border:1px solid var(--gold);border-radius:50%;display:grid;place-items:center;font-family:var(--font-display);color:var(--gold);font-size:18px}
+.tenet h3{font-size:22px}
+.tenet p{margin-top:6px;font-size:16px}
+.tenet.cost .sym{border-color:var(--lacquer);color:var(--lacquer)}
+@media (max-width:860px){.king{grid-template-columns:1fr;gap:32px}}
+@media (max-width:520px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* Chamber switcher */
+.chambers{display:flex;flex-wrap:wrap;gap:1px;background:var(--line);border-top:1px solid var(--ink);border-bottom:1px solid var(--line)}
+.chamber-btn{flex:1 1 250px;background:var(--bg);border:0;text-align:left;padding:18px 18px 20px;cursor:pointer;display:flex;flex-direction:column;gap:6px;min-width:0;position:relative}
+.chamber-btn .term{font-family:var(--font-mono);font-size:12px;color:var(--muted);letter-spacing:.06em}
+.chamber-btn .name{font-family:var(--font-display);font-size:clamp(20px,2.4vw,30px);line-height:1.1}
+.chamber-btn:hover .name{color:var(--gold)}
+.chamber-btn[aria-selected="true"]{background:var(--surface)}
+.chamber-btn[aria-selected="true"]::before{content:"";position:absolute;left:0;right:0;top:-1px;height:4px;background:var(--gold)}
+@media (max-width:700px){.chamber-btn{flex-basis:40%}}
+
+/* Pythagorean ratios */
+.ratios{margin-top:28px;border:1px solid var(--line);background:var(--surface);padding:24px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:24px;align-items:center}
+.ratios p{color:var(--muted);font-size:15px;max-width:60ch;margin-top:6px}
+.ratio-btns{display:flex;gap:10px;flex-wrap:wrap}
+.ratio-btn{border:1px solid var(--gold);background:transparent;padding:10px 16px;cursor:pointer;display:flex;flex-direction:column;align-items:flex-start;gap:2px;min-width:96px}
+.ratio-btn .r{font-family:var(--font-display);font-size:24px;line-height:1;font-variant-numeric:tabular-nums}
+.ratio-btn .n{font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.ratio-btn:hover,.ratio-btn.on{background:var(--gold-soft)}
+@media (max-width:760px){.ratios{grid-template-columns:1fr}}
+
+/* One-minute awareness practice */
+.breath{margin-top:28px;border:1px solid var(--line);background:var(--surface);padding:24px;display:grid;grid-template-columns:auto minmax(0,1fr);gap:28px;align-items:center}
+.breath p{color:var(--muted);font-size:15px;max-width:60ch;margin-top:6px}
+.orb-wrap{width:120px;height:120px;display:grid;place-items:center}
+.orb{width:60px;height:60px;border-radius:50%;border:1.5px solid var(--gold);background:var(--gold-soft);transition:transform 4s ease-in-out}
+.orb.in{transform:scale(1.9)}
+.breath .cue{font-family:var(--font-display);font-size:24px;margin-top:12px;min-height:1.3em}
+.breath .count{font-family:var(--font-mono);font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums;margin-left:10px}
+@media (max-width:560px){.breath{grid-template-columns:1fr;justify-items:start}}
+@media (prefers-reduced-motion:reduce){.orb{transition:none}}
+
+/* Chamber body */
+.chamber-head{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:40px;align-items:start}
+.chamber-head h2{font-size:clamp(34px,5vw,60px)}
+.chamber-head .q{font-family:var(--font-display);font-size:clamp(20px,2.4vw,26px);color:var(--lacquer);margin-top:16px;line-height:1.3}
+.chamber-head .intro{color:var(--muted);max-width:60ch}
+@media (max-width:800px){.chamber-head{grid-template-columns:1fr;gap:20px}}
+
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.chip{border:1px solid var(--line);background:transparent;border-radius:999px;padding:6px 14px;font-family:var(--font-mono);font-size:12px;letter-spacing:.04em;cursor:pointer}
+.chip:hover{border-color:var(--gold)}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);margin-top:28px}
+.card{background:var(--bg);padding:26px 24px 28px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.card .top{display:flex;justify-content:space-between;gap:12px;align-items:baseline}
+.card .trad{font-family:var(--font-mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold)}
+.card .era{font-family:var(--font-mono);font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.card h3{font-size:25px}
+.card .who{font-style:italic;color:var(--muted);font-size:15px}
+.card .body{font-size:16px}
+.card .practice{margin-top:auto;padding-top:14px;border-top:1px dashed var(--line);font-size:15px}
+.card .practice b{font-family:var(--font-mono);font-weight:500;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--lacquer);display:block;margin-bottom:4px}
+.empty{padding:28px;background:var(--bg);color:var(--muted)}
+
+/* Synthesis */
+.synth{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:40px;margin-top:40px}
+.synth h4{font-family:var(--font-mono);font-weight:500;font-size:12px;letter-spacing:.12em;text-transform:uppercase;margin:0 0 12px;color:var(--muted)}
+.synth ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px}
+.synth li{padding-left:22px;position:relative}
+.synth .agree li::before{content:"";position:absolute;left:0;top:.62em;width:10px;height:10px;border-radius:50%;background:var(--gold)}
+.synth .differ li::before{content:"";position:absolute;left:0;top:.62em;width:10px;height:10px;border:1.5px solid var(--lacquer);transform:rotate(45deg)}
+@media (max-width:700px){.synth{grid-template-columns:1fr;gap:28px}}
+
+/* Reflection desk */
+.desk{background:var(--surface);border:1px solid var(--line);padding:clamp(22px,4vw,40px);display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:32px}
+.desk h2{font-size:clamp(28px,3.6vw,40px)}
+.desk .prompt{font-family:var(--font-display);font-size:22px;line-height:1.35;margin-top:18px}
+.desk .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.btn{border:1px solid var(--ink);background:transparent;padding:8px 16px;cursor:pointer;font-family:var(--font-mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase}
+.btn:hover{background:var(--ink);color:var(--bg)}
+.desk textarea{width:100%;min-height:200px;resize:vertical;background:var(--bg);color:var(--ink);border:1px solid var(--line);padding:16px;font:inherit;font-size:16px;line-height:1.6}
+.desk .note{font-size:13px;color:var(--muted);margin-top:8px}
+@media (max-width:800px){.desk{grid-template-columns:1fr}}
+
+/* Timeline */
+.tl-head{display:flex;justify-content:space-between;align-items:end;gap:20px;flex-wrap:wrap;margin-bottom:24px}
+.tl-head h2{font-size:clamp(28px,3.6vw,40px)}
+.tl-scroll{overflow-x:auto;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.tl{display:grid;grid-auto-flow:column;grid-auto-columns:150px;min-width:max-content;position:relative}
+.tl::before{content:"";position:absolute;left:0;right:0;top:46px;height:1px;background:var(--ink)}
+.tl-item{padding:16px 14px 20px;display:flex;flex-direction:column;gap:6px;position:relative}
+.tl-item .yr{font-family:var(--font-mono);font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums;height:22px}
+.tl-item .dot{width:9px;height:9px;border-radius:50%;background:var(--bg);border:2px solid var(--gold);margin:-1px 0 6px}
+.tl-item .nm{font-family:var(--font-display);font-size:19px;line-height:1.15}
+.tl-item .tg{font-size:13px;color:var(--muted);line-height:1.4}
+
+footer{border-top:1px solid var(--line);padding-top:20px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;color:var(--muted);font-size:14px}
+
+.fade{animation:fade .45s ease both}
+@keyframes fade{from{opacity:.35;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.fade{animation:none}}
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+
+  <header class="hero">
+    <div>
+      <p class="label">A pavilion of eight chambers · East &amp; West</p>
+      <h1 style="margin-top:18px">How to live, <em>how to die,</em> and what we owe each other</h1>
+      <p class="lede">Twenty-five centuries of answers from the Buddha, Confucius, the Bhagavad Gita, the Stoics, the prophets and the moderns, gathered around eight questions every life must face: the meaning of life, death, karma, giving and taking, work, the shared life of the polis, the beauty of music, and awareness itself.</p>
+    </div>
+    <figure class="hero-fig">
+      <div class="niche"><img src="data:image/jpeg;base64,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" alt="Sandstone portrait head of King Jayavarman VII, eyes closed in meditation with a faint smile"></div>
+      <figcaption><b>Jayavarman VII</b>Khmer king · r. 1181–1218</figcaption>
+    </figure>
+  </header>
+
+  <section class="king" aria-label="Jayavarman VII" id="jayavarman">
+    <div>
+      <p class="label">Cambodia's philosopher-king · Mahāyāna Buddhism</p>
+      <h2>The king who felt his people's pain</h2>
+      <p class="lede2">Jayavarman VII freed Angkor after the Cham occupation of 1177 and was crowned in 1181. The first Khmer king devoted to Buddhism, he governed by the bodhisattva ideal: power exists to relieve suffering. He built Angkor Thom with the Bayon at its centre, Ta Prohm for his mother and Preah Khan for his father. His queens Jayarajadevi and, after her death, her sister Indradevi are thought to have deepened his Buddhist faith.</p>
+      <p class="inscr">The bodily pain of his people was, for him, a sharper spiritual pain than his own, because the suffering of the public is the true suffering of a king.<small>Paraphrase of his hospital inscriptions</small></p>
+      <div class="stats">
+        <div class="stat"><span class="v">102</span><span class="k">hospitals (ārogyaśālā)</span></div>
+        <div class="stat"><span class="v">121</span><span class="k">rest houses along the royal roads</span></div>
+        <div class="stat"><span class="v">~15 km</span><span class="k">between rest houses</span></div>
+        <div class="stat"><span class="v">37</span><span class="k">years of reign, 1181–1218</span></div>
+      </div>
+    </div>
+    <div class="tenets">
+      <div class="tenet"><span class="sym">ក</span><div><h3>Compassion as the purpose of power</h3><p>Following Lokeśvara, the bodhisattva of compassion, the ruler's role is to vow to save beings from suffering. The calm smiling faces of the Bayon are widely read as this compassion watching over the kingdom in every direction.</p></div></div>
+      <div class="tenet"><span class="sym">ខ</span><div><h3>The people's pain is the king's pain</h3><p>A ruler should feel public suffering more keenly than private suffering. Legitimacy comes from care for the sick, the poor and the traveller, not from the king's own glory.</p></div></div>
+      <div class="tenet"><span class="sym">គ</span><div><h3>Merit through public works</h3><p>Hospitals with doctors and medicines, rest houses with fire along the roads, reservoirs and temples: giving to the public was both good government and the making of merit, offered for the welfare of all beings.</p></div></div>
+      <div class="tenet"><span class="sym">ឃ</span><div><h3>Gratitude to parents and teachers</h3><p>Ta Prohm honoured his mother as the Perfection of Wisdom and Preah Khan his father as Lokeśvara, joining family devotion, Buddhist virtue and the duty of kingship.</p></div></div>    </div>
+  </section>
+
+  <section aria-label="The eight chambers">
+    <div class="chambers" role="tablist" id="tabs"></div>
+    <div id="chamber" style="margin-top:44px"></div>
+  </section>
+
+  <section class="desk" aria-label="Reflection desk">
+    <div>
+      <p class="label">The reflection desk</p>
+      <h2 style="margin-top:12px">Sit with one question</h2>
+      <p class="prompt" id="prompt"></p>
+      <div class="row">
+        <button class="btn" id="nextPrompt" type="button">Another question</button>
+      </div>
+    </div>
+    <div>
+      <label class="label" for="journal">Your notes for this chamber</label>
+      <textarea id="journal" style="margin-top:10px" placeholder="Write what you notice. Notes stay in this browser only."></textarea>
+      <p class="note" id="saveNote">Notes are kept privately in this browser.</p>
+    </div>
+  </section>
+
+  <section aria-label="Timeline of thinkers">
+    <div class="tl-head">
+      <div>
+        <p class="label">From the Axial Age to now</p>
+        <h2 style="margin-top:10px">The voices in the pavilion</h2>
+      </div>
+      <p class="label">Scroll sideways →</p>
+    </div>
+    <div class="tl-scroll"><div class="tl" id="timeline"></div></div>
+  </section>
+
+  <footer>
+    <span>Dr. Ngoun Sethykun · Sharing is caring!</span>
+    <span>Summaries are paraphrased for study. Read the original texts to go deeper.</span>
+  </footer>
+</div>
+
+<script>
+const FAMILIES = ["All","Indian","Chinese","Greek & Roman","Abrahamic","Modern"];
+
+const CHAMBERS = [
+ {id:"meaning", name:"Meaning of Life", term:"puruṣārtha · telos",
+  q:"What are we here for?",
+  intro:"The oldest question of all. Some traditions find meaning given from above, some find it in our nature, and some say we must make it ourselves. Most agree it is found in how we live, not in a single answer.",
+  cards:[
+   {fam:"Indian",trad:"Buddhism",who:"The Buddha",era:"c. 5th c. BCE",title:"Awaken and end suffering",
+    body:"Human birth is rare and precious because it gives the chance to awaken. The purpose of life is to see clearly, let go of craving and reach freedom from suffering, while living with compassion (karuṇā) for all beings.",
+    practice:"Ask of each day: did I add to suffering, or reduce it, in myself and others?"},
+   {fam:"Indian",trad:"Hinduism",who:"Dharmaśāstra tradition",era:"c. 500 BCE onward",title:"The four aims of life",
+    body:"Life has four proper goals (puruṣārtha): dharma (right duty), artha (wealth and security), kāma (love and pleasure) and mokṣa (liberation). All are good in their place, as long as dharma guides the others.",
+    practice:"Check your balance: which of the four aims are you neglecting, and which are you overfeeding?"},
+   {fam:"Chinese",trad:"Confucianism",who:"Confucius, Mencius",era:"551–289 BCE",title:"Become fully humane",
+    body:"Meaning lies in self-cultivation toward ren, humaneness, through learning, filial love and right relationships. A person becomes complete by helping family, community and state live in harmony.",
+    practice:"Learn something every day and practise it in one relationship."},
+   {fam:"Greek & Roman",trad:"Aristotle",who:"Nicomachean Ethics",era:"384–322 BCE",title:"Eudaimonia, human flourishing",
+    body:"Everything has a function (telos). The human function is to live by reason and virtue. Happiness is not a feeling but a whole life of excellent activity, shared with friends, over a full lifetime.",
+    practice:"Judge your life by what you are becoming, not by how you feel today."},
+   {fam:"Abrahamic",trad:"Judaism · Christianity · Islam",who:"Scripture and theologians",era:"Ancient–medieval",title:"To know, love and serve God",
+    body:"Humans are created by God for a purpose: to worship and serve Him (Islam's 'ibādah), to love God and neighbour (Christianity), to keep the covenant and repair the world (Judaism's tikkun olam). Meaning is received before it is made.",
+    practice:"Let one act each day be done as service, not for reward."},
+   {fam:"Modern",trad:"Nietzsche",who:"Friedrich Nietzsche",era:"1844–1900",title:"Become who you are",
+    body:"With old certainties fading, Nietzsche urged people to create their own values and shape life like a work of art. His test: could you will this same life to return again and again? He also praised amor fati, loving one's fate.",
+    practice:"Imagine living today again forever. What would you change?"},
+   {fam:"Modern",trad:"Logotherapy",who:"Viktor Frankl",era:"1905–1997",title:"Meaning can be found even in suffering",
+    body:"A psychiatrist who survived the Nazi camps, Frankl held that the main human drive is the will to meaning. We find it in three ways: by creating a work or doing a deed, by loving someone, and by the attitude we take toward suffering we cannot avoid.",
+    practice:"Ask not what you expect from life, but what life is asking of you right now."}
+  ],
+  agree:["Meaning is lived, not just thought about.","Pleasure alone is not enough; growth, love and service matter.","Relationships are at the centre of a meaningful life."],
+  differ:["Whether meaning is given (God, Dharma, nature) or created by us (Nietzsche, existentialists).","Whether the goal is liberation from this world or flourishing within it.","Whether suffering is to be escaped or can itself carry meaning."],
+  prompts:["What would you do with your life if no one could see or praise it?","Which of the four aims (duty, wealth, love, liberation) is strongest in you now?","What is life asking of you this year?"]
+ },
+ {id:"death", name:"Life & Death", term:"maraṇa · thanatos",
+  q:"What is a life for, if it must end?",
+  intro:"Every tradition begins here. How a culture thinks about death shapes how it tells people to live: urgently, calmly, generously, or without fear.",
+  cards:[
+   {fam:"Indian",trad:"Theravāda Buddhism",who:"The Buddha",era:"c. 5th c. BCE",title:"Everything that arises passes away",
+    body:"Life is marked by impermanence (anicca), unsatisfactoriness (dukkha) and non-self (anattā). Death is one turn of the cycle of rebirth, samsāra, driven by craving. Ending craving ends the cycle: nibbāna.",
+    practice:"Maraṇasati, mindfulness of death: recall daily that death is certain and its hour uncertain, then use the day well."},
+   {fam:"Indian",trad:"Hindu Vedānta",who:"Bhagavad Gītā",era:"c. 2nd c. BCE",title:"The self is not slain when the body is slain",
+    body:"Krishna teaches Arjuna that the ātman is eternal. The body is put off like worn clothing and a new one taken up. Grief for the self is misplaced; what matters is acting rightly in this life.",
+    practice:"When afraid, separate what changes (body, role, fortune) from what you are underneath it."},
+   {fam:"Greek & Roman",trad:"Stoicism",who:"Seneca, Marcus Aurelius",era:"1st–2nd c. CE",title:"Memento mori",
+    body:"Death is natural, like birth, and not an evil. What harms us is our judgment about it. Since any day could be the last, each should be lived complete, without waiting for a better moment.",
+    practice:"Each evening, review the day as if it were your last, and ask what was left undone."},
+   {fam:"Greek & Roman",trad:"Epicureanism",who:"Epicurus",era:"341–270 BCE",title:"Where death is, I am not",
+    body:"Death is the end of sensation, so it cannot be experienced as bad. Fearing it ruins the life we actually have. The good life is calm pleasure: friends, simple food, freedom from anxiety.",
+    practice:"Notice when fear of an ending is spoiling something that is still present."},
+   {fam:"Chinese",trad:"Daoism",who:"Zhuangzi",era:"c. 369–286 BCE",title:"Death as transformation",
+    body:"When his wife died, Zhuangzi was found drumming and singing. He explained that life and death follow each other like the seasons. Clinging to one form resists the Way (Dao).",
+    practice:"Grieve, then let the season turn. Ask what is being transformed rather than only what is lost."},
+   {fam:"Abrahamic",trad:"Judaism · Christianity · Islam",who:"Torah, Gospels, Qur'an",era:"Ancient–7th c. CE",title:"Life as a trust and a test",
+    body:"Life is a gift from God, held in stewardship. Death is not the end: there is judgment and, for Christianity and Islam especially, resurrection and an afterlife. How we lived is weighed.",
+    practice:"Treat time, body and wealth as things lent to you, to be returned with an account."},
+   {fam:"Modern",trad:"Existentialism",who:"Heidegger, Camus",era:"20th c.",title:"Being-toward-death and the absurd",
+    body:"Heidegger: facing our own death frees us from living as 'everyone' lives and makes life our own. Camus: the universe offers no answer, yet we can revolt by living fully and honestly anyway.",
+    practice:"Ask which of your choices are truly yours and which you made because others do."}
+  ],
+  agree:["Remembering death clarifies what matters now.","Fear of death causes more suffering than death itself.","The quality of a life is judged by how it is lived, not how long."],
+  differ:["Whether anything continues after death: rebirth, heaven, or nothing.","Whether the goal is to escape the cycle (Buddhism, Hinduism) or to live well inside one life (Stoics, Epicureans, Existentialists).","Whether meaning is given (by God, Dharma, the Dao) or made by us."],
+  prompts:["If you had one year left, what would you stop doing?","What would you want said about you, honestly, at your funeral?","Which fear of yours is really a fear of change?"]
+ },
+ {id:"karma", name:"Karma", term:"kamma · ethos",
+  q:"Do our actions come back to us?",
+  intro:"Karma means 'action'. In Indian thought it is a law of moral cause and effect. Other traditions reach similar ideas through God's justice, character, or the logic of trust between people.",
+  cards:[
+   {fam:"Indian",trad:"Buddhism",who:"The Buddha",era:"c. 5th c. BCE",title:"Karma is intention",
+    body:"The Buddha defined kamma as cetanā, intention. Wholesome intentions (kusala) rooted in generosity, kindness and wisdom bring good results; unwholesome ones rooted in greed, hatred and delusion bring suffering. Karma is not fate: present choices can change the course.",
+    practice:"Before acting, check the root: greed, anger or confusion, or their opposites?"},
+   {fam:"Indian",trad:"Hinduism",who:"Upanishads, Bhagavad Gītā",era:"c. 800–200 BCE",title:"Act, but release the fruit",
+    body:"Every action leaves an impression that shapes future lives. The Gītā's answer is niṣkāma karma: do your duty fully but without attachment to its results. Action done as offering does not bind.",
+    practice:"Do the work well, then let the outcome go. Effort is yours; results are not fully yours."},
+   {fam:"Indian",trad:"Jainism",who:"Mahāvīra",era:"c. 599–527 BCE",title:"Karma as subtle matter",
+    body:"Jains understand karma as fine particles that stick to the soul through passion and harm. Strict non-violence (ahiṃsā), truth and non-possession prevent new karma and burn away the old.",
+    practice:"Reduce harm in small daily acts: speech, food, how you treat living things."},
+   {fam:"Indian",trad:"Sikhism",who:"Guru Nanak",era:"1469–1539",title:"Karma and grace",
+    body:"Actions shape our birth and condition, but liberation finally comes through God's grace (nadar). Honest work, sharing with others and remembering God's name are the path.",
+    practice:"Kirat karo, vand chhako, naam japo: earn honestly, share, remember."},
+   {fam:"Abrahamic",trad:"Christianity · Judaism · Islam",who:"Scripture",era:"Ancient",title:"You reap what you sow",
+    body:"Moral consequence is real, but it runs through a personal God rather than an impersonal law. Justice is completed at judgment, and mercy and repentance can change what a person deserves.",
+    practice:"Repair harm directly: confess, make amends, and change the habit."},
+   {fam:"Greek & Roman",trad:"Virtue ethics",who:"Aristotle",era:"384–322 BCE",title:"We become what we repeatedly do",
+    body:"Aristotle's version of karma is character. Acting justly makes us just, acting bravely makes us brave. Each choice trains a habit, and habits become who we are and the life we get.",
+    practice:"Pick one virtue and practise one small act of it each day."},
+   {fam:"Modern",trad:"Game theory & reciprocity",who:"Axelrod and others",era:"20th c.",title:"Reputation is secular karma",
+    body:"In repeated dealings, cooperation and trust tend to be returned and betrayal punished. Strategies that start kind, respond fairly and forgive quickly do well over time.",
+    practice:"Be the first to cooperate, respond to how people actually behave, and forgive readily."}
+  ],
+  agree:["Intention and habit matter, not just outcomes.","Consequences are often delayed, so short-term gain from wrongdoing is a poor bet.","Change is possible: repentance, insight or new habits alter the path."],
+  differ:["Whether karma is an impersonal law, God's justice, or simply cause and effect in character and society.","Whether results extend across lifetimes or only this one.","Whether liberation comes by effort, by grace, or both."],
+  prompts:["Which small habit is quietly shaping your future most?","Think of something you did yesterday. What was the root intention?","Where do you need to make amends rather than just feel guilty?"]
+ },
+ {id:"give", name:"Give & Take", term:"dāna · charis",
+  q:"What do we owe, and how should we give and receive?",
+  intro:"Every society runs on exchange: gifts, favours, help, obligation. Traditions teach how to give well, how to receive with gratitude, and when taking becomes harm.",
+  cards:[
+   {fam:"Indian",trad:"Buddhism",who:"The Buddha",era:"c. 5th c. BCE",title:"Dāna, the first perfection",
+    body:"Generosity is the first of the ten perfections (pāramī) and the first step on the path. A gift is most fruitful when the giver is glad before giving, calm while giving and content afterwards. In Cambodia this lives on in daily alms and offerings to the wat.",
+    practice:"Give something small each day with no thought of return, and notice the mind before, during and after."},
+   {fam:"Indian",trad:"Hinduism",who:"Bhagavad Gītā 17",era:"c. 2nd c. BCE",title:"Three kinds of giving",
+    body:"The Gītā sorts gifts by quality. The purest (sāttvika) is given out of duty, at the right time and place, to a worthy person who cannot repay. Giving for return or recognition is lesser, and giving with contempt or to the unworthy is lowest.",
+    practice:"Before giving, ask: am I giving for them, or for what I will get back?"},
+   {fam:"Chinese",trad:"Confucianism",who:"Confucius",era:"551–479 BCE",title:"Shu, reciprocity",
+    body:"Asked for one word to guide a whole life, Confucius named reciprocity: do not impose on others what you would not want for yourself. Social life is a web of mutual obligation, and returning kindness is part of being humane.",
+    practice:"Before asking a favour or making a demand, put yourself on the other side."},
+   {fam:"Abrahamic",trad:"Judaism",who:"Maimonides",era:"1138–1204",title:"The ladder of tzedakah",
+    body:"Maimonides ranked charity in eight levels. Lower levels give grudgingly or in public. Higher levels give anonymously. The highest helps a person stand on their own: a loan, a partnership or a job, so they no longer need charity.",
+    practice:"Where you can, help people become independent rather than dependent."},
+   {fam:"Abrahamic",trad:"Christianity · Islam",who:"Gospels, Qur'an",era:"1st–7th c. CE",title:"Giving as worship",
+    body:"Jesus taught that it is more blessed to give than to receive, and to give in secret. Islam makes giving a pillar of faith: zakāt, a fixed share of wealth for the poor, plus voluntary ṣadaqa, which even includes a smile or a kind word.",
+    practice:"Set aside a regular share of income for others, decided in advance."},
+   {fam:"Greek & Roman",trad:"Stoicism",who:"Seneca, On Benefits",era:"c. 56–62 CE",title:"The art of benefits",
+    body:"Seneca wrote a whole book on favours. Give promptly, without humiliating the receiver, and forget that you gave. Receive gladly and remember that you received. Ingratitude, he thought, is among the commonest vices.",
+    practice:"Thank someone today for a kindness you received long ago."},
+   {fam:"Modern",trad:"Anthropology",who:"Marcel Mauss, The Gift",era:"1925",title:"Give, receive, reciprocate",
+    body:"Studying many societies, Mauss found that gifts are never truly free. They create three obligations: to give, to accept and to return. This cycle builds alliances and trust; refusing it breaks relationships.",
+    practice:"Notice the unspoken exchanges in your family and workplace. Which are out of balance?"},
+   {fam:"Modern",trad:"Organisational psychology",who:"Adam Grant, Give and Take",era:"2013",title:"Givers, takers and matchers",
+    body:"Grant sorts people at work into givers, takers and matchers who trade favours evenly. Givers appear at both the bottom and the top of success. The ones who rise give generously but protect their time and avoid being exploited by takers.",
+    practice:"Be generous by default, set clear boundaries, and stop giving to people who only take."}
+  ],
+  agree:["Generosity is a core virtue in every tradition.","The giver's intention matters as much as the gift.","Gratitude completes the exchange; taking without return erodes trust."],
+  differ:["Whether the ideal gift expects nothing back (Buddhism, Gītā) or naturally creates obligation (Confucius, Mauss).","Whether giving is a free virtue or a required duty (zakāt, tzedakah).","How much to give to people who only take."],
+  prompts:["Who has given you the most in life? Have you thanked them?","Are you mostly a giver, a taker or a matcher? In which relationships?","What is one gift you could give that would make someone more independent?"]
+ },
+ {id:"work", name:"Work & Duty", term:"svadharma · ergon",
+  q:"Why work, and how should we work?",
+  intro:"Work fills most waking hours. Traditions disagree on whether it is a duty, a calling, a means to leisure, or a source of alienation, but all ask what it does to the worker.",
+  cards:[
+   {fam:"Indian",trad:"Karma Yoga",who:"Bhagavad Gītā",era:"c. 2nd c. BCE",title:"Your own duty, done well",
+    body:"Better to do one's own duty (svadharma) imperfectly than another's perfectly. Work done without selfish attachment becomes a spiritual practice rather than a burden.",
+    practice:"Ask what your role truly requires of you today, and do that fully."},
+   {fam:"Indian",trad:"Buddhism",who:"Noble Eightfold Path",era:"c. 5th c. BCE",title:"Right livelihood",
+    body:"Earn a living without harming others: avoid trade in weapons, living beings, intoxicants and poisons. Diligence and honest wealth are praised, and wealth should be shared and used well.",
+    practice:"Check whether your work, in its final effect, increases or reduces suffering."},
+   {fam:"Chinese",trad:"Confucianism",who:"Confucius",era:"551–479 BCE",title:"Fulfil the name of your role",
+    body:"Society works when each person lives up to their role: ruler as ruler, official as official, child as child. Diligent learning and sincere service are forms of self-cultivation.",
+    practice:"Write down what your title promises. Do your actions match it?"},
+   {fam:"Chinese",trad:"Daoism",who:"Laozi",era:"trad. 6th c. BCE",title:"Wu wei, effortless action",
+    body:"The best work goes with the grain of things, like water finding its path. Forcing and over-controlling creates resistance. A good leader works so quietly that people say they did it themselves.",
+    practice:"Find where you are forcing. Is there a way that needs less struggle?"},
+   {fam:"Greek & Roman",trad:"Aristotle",who:"Nicomachean Ethics",era:"384–322 BCE",title:"We work in order to have leisure",
+    body:"For Aristotle, the highest life is contemplation and civic friendship. Work is for the sake of leisure (scholē), meaning free time for thought, learning and citizenship, not idleness.",
+    practice:"Protect some time each week that is not for earning, only for thinking and learning."},
+   {fam:"Greek & Roman",trad:"Stoicism",who:"Marcus Aurelius",era:"121–180 CE",title:"Rise to do the work of a human being",
+    body:"Writing to himself at dawn, the emperor reminds himself he was made to act and to serve the common good, not to stay warm in bed. Do your part without complaint and without needing praise.",
+    practice:"On reluctant mornings, name whom your work serves."},
+   {fam:"Abrahamic",trad:"Protestant ethic",who:"Luther, Calvin (described by Weber)",era:"16th c.",title:"Work as a calling",
+    body:"Ordinary work, not only priesthood, can be a vocation from God. Diligence, thrift and honesty in one's trade are religious duties. Weber argued this spirit helped shape modern capitalism.",
+    practice:"Treat ordinary tasks as worth doing well for their own sake."},
+   {fam:"Modern",trad:"Marx",who:"Karl Marx",era:"1818–1883",title:"Alienated labour",
+    body:"When workers have no control over what they make or how, work becomes foreign to them. They are cut off from the product, the process, their own creative nature and each other.",
+    practice:"Notice which parts of your work feel like yours, and which feel taken from you."}
+  ],
+  agree:["How you work shapes your character, not just your income.","Good work serves something beyond the self.","Honesty and diligence are near-universal virtues."],
+  differ:["Whether work is a sacred duty (Gītā, Calvin) or mainly a means to leisure (Aristotle).","Whether striving is good (Stoics, Protestant ethic) or forcing is the problem (Daoism).","Whether the main issue is the worker's attitude or the structure of the economy (Marx)."],
+  prompts:["If you no longer needed the money, which part of your work would you keep?","Who benefits, in the end, from the work you did this week?","Where in your work are you forcing instead of flowing?"]
+ },
+ {id:"politics", name:"Politics", term:"rājadhamma · polis",
+  q:"Who should rule, and why should we obey?",
+  intro:"Political philosophy asks what makes power legitimate and what a good ruler owes the people. Answers range from virtuous kings to social contracts to rights and fairness.",
+  cards:[
+   {fam:"Indian",trad:"Buddhist kingship",who:"Dasa Rāja Dhamma",era:"Pāli Canon",title:"The ten duties of the king",
+    body:"A righteous ruler practises generosity, morality, self-sacrifice, honesty, gentleness, self-restraint, non-anger, non-violence, patience and conformity with the Dhamma. This ideal has deeply shaped Cambodian and Southeast Asian kingship.",
+    practice:"Judge leaders, and yourself as a leader, against the ten duties."},
+   {fam:"Indian",trad:"Khmer Mahāyāna kingship",who:"Jayavarman VII",era:"r. 1181–1218",title:"The ruler as bodhisattva",
+    body:"Cambodia's great Buddhist king held that the suffering of the people is the true suffering of the king. He put this into practice with 102 hospitals and 121 rest houses across the empire, while also building the Bayon and Angkor Thom on a scale that demanded heavy labour.",
+    practice:"Measure power by how much suffering it relieves, and count the costs it imposes too."},
+   {fam:"Indian",trad:"Arthaśāstra",who:"Kauṭilya",era:"c. 4th c. BCE",title:"The king's happiness lies in his people's",
+    body:"A hard-headed manual of statecraft: taxation, administration, spies and diplomacy. Yet it holds that the ruler's welfare depends on the welfare of subjects, and that good government needs disciplined officials.",
+    practice:"Ask whether a policy actually improves people's welfare, not just the state's revenue."},
+   {fam:"Chinese",trad:"Confucianism",who:"Confucius, Mencius",era:"551–289 BCE",title:"Rule by virtue; the people come first",
+    body:"Govern by moral example, not only by laws and punishments. Mencius went further: the people matter most, the state next, the ruler least. A tyrant loses the Mandate of Heaven and may rightly be removed.",
+    practice:"Lead by example before giving orders."},
+   {fam:"Greek & Roman",trad:"Plato & Aristotle",who:"Republic, Politics",era:"4th c. BCE",title:"Justice and the political animal",
+    body:"Plato: justice is each part of the city and soul doing its proper work, ideally under philosopher-rulers. Aristotle: humans are political animals who flourish only in a community; the best constitutions mix rule by the few and the many.",
+    practice:"Take part in community life. Flourishing is not a private achievement."},
+   {fam:"Modern",trad:"Realism",who:"Niccolò Machiavelli",era:"1469–1527",title:"Politics as it is",
+    body:"Rulers must deal with people as they are, not as they should be. A prince must sometimes act against conventional virtue to keep the state secure. Machiavelli also admired republics and civic liberty.",
+    practice:"Separate the ideal from the practical, and be honest about which one you are discussing."},
+   {fam:"Modern",trad:"Social contract",who:"Hobbes, Locke, Rousseau",era:"17th–18th c.",title:"Power comes from consent",
+    body:"Hobbes: without government, life is war of all against all, so we accept a strong sovereign. Locke: government exists to protect life, liberty and property, and may be resisted if it fails. Rousseau: legitimate law expresses the general will.",
+    practice:"Ask what you have agreed to, and what the state has promised in return."},
+   {fam:"Modern",trad:"Liberalism",who:"J. S. Mill, John Rawls",era:"19th–20th c.",title:"Liberty and fairness",
+    body:"Mill: power may only limit liberty to prevent harm to others. Rawls: just rules are those we would choose behind a 'veil of ignorance', not knowing our own place in society, which favours protecting the worst-off.",
+    practice:"Test a rule by imagining you could be anyone affected by it."}
+  ],
+  agree:["Power must serve the people to be legitimate.","Rulers need personal virtue or institutional checks, ideally both.","Justice involves fairness toward the weakest members."],
+  differ:["Whether legitimacy comes from virtue and heaven, or from consent and rights.","Whether politics should aim at moral ideals or at stability and security.","How much individual liberty should yield to community and order."],
+  prompts:["Which of the ten royal duties do today's leaders most need?","If you didn't know your place in society, what rule would you want?","Where do you hold power over others, however small? How do you use it?"]
+ },
+ {id:"music", name:"The Beauty of Music", term:"nāda · harmonia",
+  q:"Why does music move us so deeply?",
+  intro:"Music has no words of its own, yet it can bring tears, courage or calm in seconds. Philosophers have seen in it the order of the cosmos, a shaper of character, a path to the divine and a mirror of the will itself.",
+  ratios:true,
+  cards:[
+   {fam:"Greek & Roman",trad:"Pythagoreans",who:"Pythagoras",era:"c. 570–495 BCE",title:"Harmony is number",
+    body:"Pythagoras is said to have found that pleasing intervals come from simple ratios of string length: the octave 2:1, the fifth 3:2, the fourth 4:3. His followers believed the planets themselves move in such proportions, a silent 'music of the spheres'.",
+    practice:"Listen for consonance and tension in a piece, and notice how resolution feels like order restored."},
+   {fam:"Greek & Roman",trad:"Plato",who:"Republic, Laws",era:"c. 428–348 BCE",title:"Music shapes the soul",
+    body:"Rhythm and harmony sink deep into the soul, so education should begin with music. Plato thought some modes build courage and self-control while others weaken character, which is why he wanted the city to take music seriously.",
+    practice:"Notice how the music you hear daily changes your mood and choices."},
+   {fam:"Chinese",trad:"Confucianism",who:"Confucius, Xunzi",era:"551–238 BCE",title:"Ritual and music bring harmony",
+    body:"Ritual (lǐ) creates proper distinctions between people; music (yuè) joins their hearts. The Analects say Confucius heard the ancient Shao music and for three months did not notice the taste of meat. Good music was a sign of good government.",
+    practice:"Make music with others, even singing together, to feel what shared harmony does."},
+   {fam:"Indian",trad:"Hindu aesthetics",who:"Bharata, Nāṭyaśāstra",era:"c. 200 BCE–200 CE",title:"Nāda Brahman, the world is sound",
+    body:"Indian thought holds that the universe arises from primal sound (nāda), heard in the syllable Om. The Nāṭyaśāstra explains how music and drama awaken rasa, a refined taste of emotion that lifts the listener beyond private feeling.",
+    practice:"Before a raga or chant, sit in silence for a minute, then listen to how the first note opens."},
+   {fam:"Indian",trad:"Khmer Buddhist tradition",who:"Pinpeat ensemble",era:"Angkor to today",title:"Music for ceremony and merit",
+    body:"Monks keep a precept to refrain from entertainment, yet chanting is central to Buddhist practice. In Cambodia the pinpeat ensemble of gongs, xylophone, oboe and drums accompanies temple ceremonies and royal dance, carrying the Angkor heritage forward.",
+    practice:"Listen to chanting at the wat as a form of meditation, not just ceremony."},
+   {fam:"Abrahamic",trad:"Psalms & Augustine",who:"King David, St. Augustine",era:"c. 1000 BCE; 354–430 CE",title:"Song as prayer",
+    body:"The Psalms are songs of praise, grief and hope. Augustine, in his Confessions, was moved to tears by church hymns but also worried that beauty of sound might distract from the words. He concluded that singing can lift weak minds toward devotion.",
+    practice:"Let one song this week be a prayer or a gratitude, not background noise."},
+   {fam:"Abrahamic",trad:"Sufism",who:"Jalāl al-Dīn Rūmī",era:"1207–1273",title:"The reed's longing",
+    body:"Rumi's great poem opens with a reed flute that cries because it was cut from its reed bed, as the soul longs for its divine source. Sufi samāʿ uses music and turning to reach that union. (Islamic scholars have long debated how far music is permitted.)",
+    practice:"When music moves you, ask what you are longing for."},
+   {fam:"Modern",trad:"Schopenhauer & Nietzsche",who:"Arthur Schopenhauer, Friedrich Nietzsche",era:"19th c.",title:"The highest art",
+    body:"Schopenhauer ranked music above all arts because it does not copy things in the world; it expresses the inner will itself, so it speaks of feeling without naming it. Nietzsche agreed on its power, saying that without music life would be a mistake.",
+    practice:"Listen to a piece without lyrics and name the feeling it gives, without a story."},
+   {fam:"Modern",trad:"Neuroscience",who:"Music and the brain",era:"21st c.",title:"Pleasure in expectation",
+    body:"Brain imaging studies have found that music releases dopamine, the same reward chemical as food and love, both during the anticipation before a peak and at the peak itself. Music's beauty may lie in the play between what we expect and what we get.",
+    practice:"Notice the moment just before your favourite part of a song. That waiting is part of the joy."}
+  ],
+  agree:["Music reaches feelings that words cannot.","Music shapes character and community, not only private enjoyment.","Harmony in sound mirrors a deeper order: in the cosmos, the soul or society."],
+  differ:["Whether music leads toward the divine (Sufis, Psalms, nāda) or should be treated with caution (Plato, some Buddhist and Islamic views).","Whether its beauty is mathematical order (Pythagoras) or raw expression of will and feeling (Schopenhauer).","Whether music is mainly for the individual listener or for ritual and the common good (Confucius)."],
+  prompts:["Which piece of music has stayed with you the longest? Why that one?","What music did your parents or grandparents love? What does it say about their lives?","When did music last change your mood completely?"]
+ },
+ {id:"awareness", name:"Awareness & Consciousness", term:"sati · viññāṇa · nous",
+  q:"What is it that knows, and can it be trained?",
+  intro:"You are aware of these words right now, yet no one can fully explain what awareness is. Contemplative traditions treat it as something to train and purify; philosophers and scientists ask how it can arise at all.",
+  breath:true,
+  cards:[
+   {fam:"Indian",trad:"Theravāda Buddhism",who:"Satipaṭṭhāna Sutta",era:"c. 5th c. BCE",title:"Mindfulness, the direct path",
+    body:"The Buddha taught four foundations of mindfulness (sati): body, feelings, mind and mental phenomena. Consciousness (viññāṇa) is one of the five aggregates. It arises from conditions moment by moment, with no fixed self behind it doing the watching.",
+    practice:"Several times a day, stop and note: what is the body doing, what is felt, what is the mind like?"},
+   {fam:"Indian",trad:"Yogācāra Buddhism",who:"Asaṅga, Vasubandhu",era:"4th–5th c. CE",title:"The storehouse consciousness",
+    body:"This Mahāyāna school counts eight layers of consciousness. The deepest, the ālaya-vijñāna, stores the seeds of past actions that ripen into future experience. This links awareness directly to karma: what we repeatedly attend to shapes what we become.",
+    practice:"Notice which thoughts you water each day. They are the seeds you are planting."},
+   {fam:"Indian",trad:"Advaita Vedānta",who:"Upanishads, Śaṅkara",era:"c. 800 BCE; 8th c. CE",title:"Pure awareness is the Self",
+    body:"Beneath waking, dreaming and dreamless sleep lies a fourth state (turīya), pure consciousness. This witness (sākṣī) is the ātman, and the ātman is Brahman. Thoughts and sensations come and go, but the awareness that knows them does not.",
+    practice:"Ask 'Who is aware of this thought?' and rest in the knowing rather than the thought."},
+   {fam:"Indian",trad:"Yoga",who:"Patañjali, Yoga Sūtras",era:"c. 2nd c. BCE–4th c. CE",title:"Stilling the waves of the mind",
+    body:"Yoga is defined as stilling the fluctuations of the mind (citta-vṛtti-nirodha). When the waves settle, the seer rests in its own nature, like a lake that becomes clear when the wind stops.",
+    practice:"Sit for five minutes and simply watch thoughts rise and fall without following them."},
+   {fam:"Chinese",trad:"Daoism",who:"Zhuangzi",era:"c. 369–286 BCE",title:"The butterfly dream",
+    body:"Zhuangzi dreamed he was a butterfly, happy and free. On waking he could not tell whether he was a man who had dreamed of being a butterfly, or a butterfly now dreaming of being a man. Awareness cannot easily step outside itself to check what is real.",
+    practice:"Hold your certainties a little more lightly. Your view is one view."},
+   {fam:"Greek & Roman",trad:"Delphi & Aristotle",who:"Socrates, Aristotle",era:"5th–4th c. BCE",title:"Know thyself",
+    body:"The temple at Delphi bore the command 'Know thyself', and Socrates made it a life's work. Aristotle noticed something strange in perception itself: when we see, we are also aware that we see. The mind can turn back on itself.",
+    practice:"At the end of the day, ask not what happened, but what you noticed and what you missed."},
+   {fam:"Abrahamic",trad:"Christian & Sufi contemplatives",who:"Augustine; Sufi murāqaba",era:"4th c. onward",title:"Turning inward to the source",
+    body:"Augustine urged people not to wander outside, because truth dwells in the inner person. Sufis practise murāqaba, a watchful attention of the heart in which the seeker becomes aware of being seen by God.",
+    practice:"Spend a few minutes in silence attending to the heart, not the to-do list."},
+   {fam:"Modern",trad:"Descartes & James",who:"René Descartes, William James",era:"1641; 1890",title:"I think, therefore I am",
+    body:"Descartes found that he could doubt everything except that he was thinking, and so concluded mind and body are separate substances. William James later described consciousness not as a thing but as a continuous stream, always flowing and always personal.",
+    practice:"Watch the stream for one minute. Notice how quickly one thought becomes another."},
+   {fam:"Modern",trad:"Philosophy of mind & neuroscience",who:"Thomas Nagel, David Chalmers",era:"1974; 1995",title:"The hard problem",
+    body:"Nagel asked what it is like to be a bat: experience has a felt, first-person quality. Chalmers called explaining that felt quality the 'hard problem', distinct from explaining behaviour. Science now maps many brain correlates of awareness, but why there is experience at all remains open.",
+    practice:"Look at a colour and ask what, exactly, the redness of red is. Notice that no description captures it."}
+  ],
+  agree:["Ordinary attention is scattered, and it can be trained.","There is a difference between the contents of the mind and the awareness that knows them.","Self-knowledge is the starting point of wisdom."],
+  differ:["Whether there is a permanent witness behind experience (Vedānta) or only changing processes (Buddhism).","Whether mind and body are separate (Descartes) or consciousness arises from the brain.","Whether awareness is mainly something to be explained (science) or to be realised (contemplatives)."],
+  prompts:["What were you aware of in the last five minutes, and what did you miss?","When are you most fully present? What is different about those moments?","Is there a part of you that watches your moods without being them?"]
+ }
+];
+let breathTimer = null;
+function stopBreath(byUser){
+  if(breathTimer){ clearInterval(breathTimer); breathTimer = null; }
+  const orb = $("#orb"), cue = $("#cue"), cnt = $("#count"), bb = $("#breathBtn");
+  if(orb) orb.classList.remove("in");
+  if(cue && byUser) cue.textContent = "Paused. Begin again any time";
+  if(cnt) cnt.textContent = "";
+  if(bb) bb.textContent = "Begin one minute";
+}
+function startBreath(){
+  let t = 0; const total = 60;
+  const orb = $("#orb"), cue = $("#cue"), cnt = $("#count"), bb = $("#breathBtn");
+  bb.textContent = "Stop";
+  const tick = () => {
+    if(t >= total){ stopBreath(); cue.textContent = "Done. Notice how you feel now"; return; }
+    const phase = t % 10;
+    if(phase === 0){ orb.classList.add("in"); cue.textContent = "Breathe in"; }
+    if(phase === 4){ orb.classList.remove("in"); orb.style.transitionDuration = "6s"; cue.textContent = "Breathe out"; }
+    if(phase === 0) orb.style.transitionDuration = "4s";
+    cnt.textContent = (total - t) + "s left";
+    t++;
+  };
+  tick();
+  breathTimer = setInterval(tick, 1000);
+}
+const RATIOS =[["2:1","Octave",2],["3:2","Fifth",1.5],["4:3","Fourth",4/3],["5:4","Major third",1.25]];
+let audioCtx;
+function playRatio(mult, btn){
+  try{
+    audioCtx = audioCtx || new (window.AudioContext||window.webkitAudioContext)();
+    const base = 220, now = audioCtx.currentTime;
+    [base, base*mult].forEach((f,i) => {
+      const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+      o.type = "sine"; o.frequency.value = f;
+      g.gain.setValueAtTime(0, now + i*0.5);
+      g.gain.linearRampToValueAtTime(0.18, now + i*0.5 + 0.04);
+      g.gain.setValueAtTime(0.18, now + 1.6);
+      g.gain.exponentialRampToValueAtTime(0.0001, now + 2.6);
+      o.connect(g).connect(audioCtx.destination);
+      o.start(now + i*0.5); o.stop(now + 2.7);
+    });
+    btn.classList.add("on"); setTimeout(() => btn.classList.remove("on"), 2600);
+  }catch(e){}
+}
+
+const TIMELINE = [
+ ["c. 599 BCE","Mahāvīra","Jain teacher of non-violence"],
+ ["c. 6th c. BCE","Laozi","Dao De Jing, wu wei"],
+ ["c. 570 BCE","Pythagoras","Harmony is number"],
+ ["551 BCE","Confucius","Roles, virtue, ritual"],
+ ["c. 5th c. BCE","The Buddha","Impermanence, karma as intention"],
+ ["470 BCE","Socrates","The examined life"],
+ ["428 BCE","Plato","Justice in the soul and city"],
+ ["384 BCE","Aristotle","Virtue, leisure, the polis"],
+ ["372 BCE","Mencius","The people come first"],
+ ["c. 369 BCE","Zhuangzi","Death as transformation"],
+ ["c. 4th c. BCE","Kauṭilya","Arthaśāstra, statecraft"],
+ ["341 BCE","Epicurus","Calm pleasure, no fear of death"],
+ ["c. 2nd c. BCE","Bhagavad Gītā","Duty without attachment"],
+ ["c. 2nd c. BCE","Patañjali","Yoga Sūtras, stilling the mind"],
+ ["c. 200 BCE","Bharata","Nāṭyaśāstra, rasa"],
+ ["c. 4 BCE","Seneca","On the shortness of life"],
+ ["121 CE","Marcus Aurelius","Meditations, duty at dawn"],
+ ["354 CE","Augustine","Song as prayer, the inner self"],
+ ["4th c. CE","Vasubandhu","Storehouse consciousness"],
+ ["c. 8th c.","Śaṅkara","Pure awareness is the Self"],
+ ["c. 1122","Jayavarman VII","Compassionate Khmer kingship"],
+ ["1138","Maimonides","The ladder of charity"],
+ ["1207","Rūmī","The reed's longing"],
+ ["1469","Guru Nanak","Honest work, sharing, grace"],
+ ["1469","Machiavelli","Politics as it is"],
+ ["1588","Hobbes","Leviathan, security"],
+ ["1596","Descartes","I think, therefore I am"],
+ ["1632","Locke","Consent and rights"],
+ ["1712","Rousseau","The general will"],
+ ["1724","Kant","Duty and dignity"],
+ ["1788","Schopenhauer","Music as the will itself"],
+ ["1806","J. S. Mill","The harm principle"],
+ ["1818","Marx","Alienated labour"],
+ ["1842","William James","The stream of consciousness"],
+ ["1844","Nietzsche","Become who you are"],
+ ["1864","Max Weber","The work ethic and the state"],
+ ["1872","Marcel Mauss","The Gift"],
+ ["1889","Heidegger","Being-toward-death"],
+ ["1905","Viktor Frankl","The will to meaning"],
+ ["1913","Albert Camus","The absurd and revolt"],
+ ["1921","John Rawls","Justice as fairness"],
+ ["1937","Thomas Nagel","What is it like to be a bat?"],
+ ["1966","David Chalmers","The hard problem"]
+];
+
+const store = {
+  get(k){try{return localStorage.getItem(k)}catch(e){return null}},
+  set(k,v){try{localStorage.setItem(k,v);return true}catch(e){return false}}
+};
+
+let current = "meaning", family = "All", promptIdx = 0;
+const $ = s => document.querySelector(s);
+const esc = s => s.replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+function renderTabs(){
+  $("#tabs").innerHTML = CHAMBERS.map(c => `
+    <button class="chamber-btn" role="tab" id="tab-${c.id}" aria-selected="${c.id===current}" data-id="${c.id}" type="button">
+      <span class="term">${c.term}</span><span class="name">${c.name}</span>
+    </button>`).join("");
+  document.querySelectorAll(".chamber-btn").forEach(b => b.onclick = () => select(b.dataset.id));
+}
+
+function renderChamber(){
+  const c = CHAMBERS.find(x => x.id===current);
+  const fams = FAMILIES.filter(f => f==="All" || c.cards.some(k => k.fam===f));
+  if(!fams.includes(family)) family = "All";
+  const list = c.cards.filter(k => family==="All" || k.fam===family);
+  $("#chamber").innerHTML = `
+   <div class="fade" role="tabpanel" aria-labelledby="tab-${c.id}">
+    <div class="chamber-head">
+      <div><p class="label">${c.term}</p><h2 style="margin-top:10px">${c.name}</h2><p class="q">${c.q}</p></div>
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <p class="intro">${c.intro}</p>
+        <div><p class="label">Filter by tradition</p>
+        <div class="filters">${fams.map(f=>`<button class="chip" type="button" aria-pressed="${f===family}" data-f="${f}">${f}</button>`).join("")}</div></div>
+      </div>
+    </div>
+    <div class="cards">
+      ${list.map(k=>`
+        <article class="card">
+          <div class="top"><span class="trad">${esc(k.trad)}</span><span class="era">${k.era}</span></div>
+          <h3>${esc(k.title)}</h3>
+          <p class="who">${esc(k.who)}</p>
+          <p class="body">${esc(k.body)}</p>
+          <p class="practice"><b>Practice</b>${esc(k.practice)}</p>
+        </article>`).join("") || `<p class="empty">No traditions in this filter.</p>`}
+    </div>
+    ${c.ratios ? `
+    <div class="ratios">
+      <div><p class="label">Hear Pythagoras' ratios</p>
+      <p>Each button plays a low note (220 Hz), then adds a second note at the given ratio. The simpler the ratio, the smoother the blend sounds.</p></div>
+      <div class="ratio-btns">${RATIOS.map((r,i)=>`<button class="ratio-btn" type="button" data-i="${i}"><span class="r">${r[0]}</span><span class="n">${r[1]}</span></button>`).join("")}</div>
+    </div>` : ""}
+    ${c.breath ? `
+    <div class="breath">
+      <div class="orb-wrap" aria-hidden="true"><div class="orb" id="orb"></div></div>
+      <div><p class="label">One-minute awareness practice</p>
+      <p>Breathe in for 4 seconds as the circle grows, out for 6 as it shrinks. Let your attention rest on the breath. When the mind wanders, notice it and come back.</p>
+      <p class="cue" aria-live="polite"><span id="cue">Ready when you are</span><span class="count" id="count"></span></p>
+      <div style="margin-top:14px"><button class="btn" type="button" id="breathBtn">Begin one minute</button></div></div>
+    </div>` : ""}
+    <div class="synth">
+      <div class="agree"><h4>Where the traditions meet</h4><ul>${c.agree.map(a=>`<li>${a}</li>`).join("")}</ul></div>
+      <div class="differ"><h4>Where they part ways</h4><ul>${c.differ.map(a=>`<li>${a}</li>`).join("")}</ul></div>
+    </div>
+   </div>`;
+  document.querySelectorAll(".chip").forEach(b => b.onclick = () => { family = b.dataset.f; renderChamber(); });
+  document.querySelectorAll(".ratio-btn").forEach(b => b.onclick = () => playRatio(RATIOS[+b.dataset.i][2], b));
+  stopBreath();
+  const bb = $("#breathBtn");
+  if(bb) bb.onclick = () => breathTimer ? stopBreath(true) : startBreath();
+}
+
+function renderDesk(){
+  const c = CHAMBERS.find(x => x.id===current);
+  $("#prompt").textContent = c.prompts[promptIdx % c.prompts.length];
+  $("#journal").value = store.get("pavilion-notes-"+current) || "";
+  $("#saveNote").textContent = "Notes for “"+c.name+"” are kept privately in this browser.";
+}
+
+function select(id){
+  current = id; family = "All"; promptIdx = 0;
+  renderTabs(); renderChamber(); renderDesk();
+  try{ history.replaceState(null,"","#"+id) }catch(e){}
+}
+
+$("#nextPrompt").onclick = () => { promptIdx++; renderDesk(); };
+let t;
+$("#journal").addEventListener("input", e => {
+  clearTimeout(t);
+  t = setTimeout(() => {
+    const ok = store.set("pavilion-notes-"+current, e.target.value);
+    $("#saveNote").textContent = ok ? "Saved in this browser." : "This browser is not allowing notes to be saved.";
+  }, 400);
+});
+
+$("#timeline").innerHTML = TIMELINE.map(([y,n,g]) => `
+  <div class="tl-item"><span class="yr">${y}</span><span class="dot"></span><span class="nm">${n}</span><span class="tg">${g}</span></div>`).join("");
+
+const h = (location.hash||"").slice(1);
+select(CHAMBERS.some(c=>c.id===h) ? h : CHAMBERS[0].id);
+</script>
+
+</body>
+</html>
